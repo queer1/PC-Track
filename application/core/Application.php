@@ -26,8 +26,8 @@ class Application
         // create array with URL parts in $url
         $this->splitUrl();
 
-	    // creates controller and action names (from URL input)
-	    $this->createControllerAndActionNames();
+        // creates controller and action names (from URL input)
+        $this->createControllerAndActionNames();
 
         // does such a controller exist ?
         if (file_exists(PATH_CONTROLLER . $this->controller_name . '.php')) {
@@ -78,23 +78,23 @@ class Application
         }
     }
 
-	/**
-	 * Checks if controller and action names are given. If not, default values are put into the properties.
-	 * Also renames controller to usable name.
-	 */
-	private function createControllerAndActionNames()
-	{
-		// check for controller: no controller given ? then make controller = default controller (from config)
-		if (!$this->controller_name) {
-			$this->controller_name = DEFAULT_CONTROLLER;
-		}
+    /**
+     * Checks if controller and action names are given. If not, default values are put into the properties.
+     * Also renames controller to usable name.
+     */
+    private function createControllerAndActionNames()
+    {
+        // check for controller: no controller given ? then make controller = default controller (from config)
+        if (!$this->controller_name) {
+            $this->controller_name = DEFAULT_CONTROLLER;
+        }
 
-		// check for action: no action given ? then make action = default action (from config)
-		if (!$this->action_name OR (strlen($this->action_name) == 0)) {
-			$this->action_name = DEFAULT_ACTION;
-		}
+        // check for action: no action given ? then make action = default action (from config)
+        if (!$this->action_name OR (strlen($this->action_name) == 0)) {
+            $this->action_name = DEFAULT_ACTION;
+        }
 
-		// rename controller name to real controller class/file name ("index" to "IndexController")
-		$this->controller_name = ucwords($this->controller_name) . 'Controller';
-	}
+        // rename controller name to real controller class/file name ("index" to "IndexController")
+        $this->controller_name = ucwords($this->controller_name) . 'Controller';
+    }
 }

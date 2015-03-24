@@ -84,85 +84,6 @@ class UserModel
     }
 
     /**
-     * Checks if a username is already taken
-     *
-     * @param $user_name string username
-     *
-     * @return bool
-     */
-    public static function doesUsernameAlreadyExist($user_name)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
-
-        $query = $database->prepare("SELECT user_id FROM users WHERE user_name = :user_name LIMIT 1");
-        $query->execute(array(':user_name' => $user_name));
-        if ($query->rowCount() == 0) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Checks if a email is already used
-     *
-     * @param $user_email string email
-     *
-     * @return bool
-     */
-    public static function doesEmailAlreadyExist($user_email)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
-
-        $query = $database->prepare("SELECT user_id FROM users WHERE user_email = :user_email LIMIT 1");
-        $query->execute(array(':user_email' => $user_email));
-        if ($query->rowCount() == 0) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Writes new username to database
-     *
-     * @param $user_id int user id
-     * @param $new_user_name string new username
-     *
-     * @return bool
-     */
-    public static function saveNewUserName($user_id, $new_user_name)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
-
-        $query = $database->prepare("UPDATE users SET user_name = :user_name WHERE user_id = :user_id LIMIT 1");
-        $query->execute(array(':user_name' => $new_user_name, ':user_id' => $user_id));
-        if ($query->rowCount() == 1) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Writes new email address to database
-     *
-     * @param $user_id int user id
-     * @param $new_user_email string new email address
-     *
-     * @return bool
-     */
-    public static function saveNewEmailAddress($user_id, $new_user_email)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
-
-        $query = $database->prepare("UPDATE users SET user_email = :user_email WHERE user_id = :user_id LIMIT 1");
-        $query->execute(array(':user_email' => $new_user_email, ':user_id' => $user_id));
-        $count =  $query->rowCount();
-        if ($count == 1) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Edit the user's name, provided in the editing form
      *
      * @param $new_user_name string The new username
@@ -201,6 +122,45 @@ class UserModel
             Session::add('feedback_negative', Text::get('FEEDBACK_UNKNOWN_ERROR'));
             return false;
         }
+    }
+
+    /**
+     * Checks if a username is already taken
+     *
+     * @param $user_name string username
+     *
+     * @return bool
+     */
+    public static function doesUsernameAlreadyExist($user_name)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $database->prepare("SELECT user_id FROM users WHERE user_name = :user_name LIMIT 1");
+        $query->execute(array(':user_name' => $user_name));
+        if ($query->rowCount() == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Writes new username to database
+     *
+     * @param $user_id int user id
+     * @param $new_user_name string new username
+     *
+     * @return bool
+     */
+    public static function saveNewUserName($user_id, $new_user_name)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $database->prepare("UPDATE users SET user_name = :user_name WHERE user_id = :user_id LIMIT 1");
+        $query->execute(array(':user_name' => $new_user_name, ':user_id' => $user_id));
+        if ($query->rowCount() == 1) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -251,6 +211,46 @@ class UserModel
         }
 
         Session::add('feedback_negative', Text::get('FEEDBACK_UNKNOWN_ERROR'));
+        return false;
+    }
+
+    /**
+     * Checks if a email is already used
+     *
+     * @param $user_email string email
+     *
+     * @return bool
+     */
+    public static function doesEmailAlreadyExist($user_email)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $database->prepare("SELECT user_id FROM users WHERE user_email = :user_email LIMIT 1");
+        $query->execute(array(':user_email' => $user_email));
+        if ($query->rowCount() == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Writes new email address to database
+     *
+     * @param $user_id int user id
+     * @param $new_user_email string new email address
+     *
+     * @return bool
+     */
+    public static function saveNewEmailAddress($user_id, $new_user_email)
+    {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $database->prepare("UPDATE users SET user_email = :user_email WHERE user_id = :user_id LIMIT 1");
+        $query->execute(array(':user_email' => $new_user_email, ':user_id' => $user_id));
+        $count = $query->rowCount();
+        if ($count == 1) {
+            return true;
+        }
         return false;
     }
 
