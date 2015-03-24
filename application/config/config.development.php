@@ -38,36 +38,8 @@ define('DEFAULT_ACTION', 'index');
 /**
  * TODO Put this array into the DB
  */
-return array(
-    'FACEBOOK_LOGIN' => false,
-    'CAPTCHA_WIDTH' => 359,
-    'CAPTCHA_HEIGHT' => 100,
-    'COOKIE_RUNTIME' => 1209600,
-    'COOKIE_PATH' => '/',
-    'USE_GRAVATAR' => false,
-    'GRAVATAR_DEFAULT_IMAGESET' => 'mm',
-    'GRAVATAR_RATING' => 'pg',
-    'AVATAR_SIZE' => 44,
-    'AVATAR_JPEG_QUALITY' => 85,
-    'AVATAR_DEFAULT_IMAGE' => 'default.jpg',
+return array('FACEBOOK_LOGIN' => false, 'CAPTCHA_WIDTH' => 359, 'CAPTCHA_HEIGHT' => 100, 'COOKIE_RUNTIME' => 1209600, 'COOKIE_PATH' => '/', 'USE_GRAVATAR' => false, 'GRAVATAR_DEFAULT_IMAGESET' => 'mm', 'GRAVATAR_RATING' => 'pg', 'AVATAR_SIZE' => 44, 'AVATAR_JPEG_QUALITY' => 85, 'AVATAR_DEFAULT_IMAGE' => 'default.jpg',
 
-    'EMAIL_USED_MAILER' => 'phpmailer',
-    'EMAIL_USE_SMTP' => false,
-    'EMAIL_SMTP_HOST' => 'yourhost',
-    'EMAIL_SMTP_AUTH' => true,
-    'EMAIL_SMTP_USERNAME' => 'yourusername',
-    'EMAIL_SMTP_PASSWORD' => 'yourpassword',
-    'EMAIL_SMTP_PORT' => 465,
-    'EMAIL_SMTP_ENCRYPTION' => 'ssl',
+    'EMAIL_USED_MAILER' => 'phpmailer', 'EMAIL_USE_SMTP' => false, 'EMAIL_SMTP_HOST' => 'yourhost', 'EMAIL_SMTP_AUTH' => true, 'EMAIL_SMTP_USERNAME' => 'yourusername', 'EMAIL_SMTP_PASSWORD' => 'yourpassword', 'EMAIL_SMTP_PORT' => 465, 'EMAIL_SMTP_ENCRYPTION' => 'ssl',
 
-    'EMAIL_PASSWORD_RESET_URL' => 'login/verifypasswordreset',
-    'EMAIL_PASSWORD_RESET_FROM_EMAIL' => 'no-reply@example.com',
-    'EMAIL_PASSWORD_RESET_FROM_NAME' => 'My Project',
-    'EMAIL_PASSWORD_RESET_SUBJECT' => 'Password reset for PROJECT XY',
-    'EMAIL_PASSWORD_RESET_CONTENT' => 'Please click on this link to reset your password: ',
-    'EMAIL_VERIFICATION_URL' => 'login/verify',
-    'EMAIL_VERIFICATION_FROM_EMAIL' => 'no-reply@example.com',
-    'EMAIL_VERIFICATION_FROM_NAME' => 'My Project',
-    'EMAIL_VERIFICATION_SUBJECT' => 'Account activation for PROJECT XY',
-    'EMAIL_VERIFICATION_CONTENT' => 'Please click on this link to activate your account: ',
-);
+    'EMAIL_PASSWORD_RESET_URL' => 'login/verifypasswordreset', 'EMAIL_PASSWORD_RESET_FROM_EMAIL' => 'no-reply@example.com', 'EMAIL_PASSWORD_RESET_FROM_NAME' => 'My Project', 'EMAIL_PASSWORD_RESET_SUBJECT' => 'Password reset for PROJECT XY', 'EMAIL_PASSWORD_RESET_CONTENT' => 'Please click on this link to reset your password: ', 'EMAIL_VERIFICATION_URL' => 'login/verify', 'EMAIL_VERIFICATION_FROM_EMAIL' => 'no-reply@example.com', 'EMAIL_VERIFICATION_FROM_NAME' => 'My Project', 'EMAIL_VERIFICATION_SUBJECT' => 'Account activation for PROJECT XY', 'EMAIL_VERIFICATION_CONTENT' => 'Please click on this link to activate your account: ',);

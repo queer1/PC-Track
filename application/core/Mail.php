@@ -1,24 +1,20 @@
 <?php
 
-class Mail
-{
+class Mail {
     /** @var mixed variable to collect errors */
     private $error;
 
-    public function sendMail($user_email, $from_email, $from_name, $subject, $body)
-    {
-        if (Config::get('EMAIL_USED_MAILER') == "phpmailer") {
+    public function sendMail($user_email, $from_email, $from_name, $subject, $body) {
+        if(Config::get('EMAIL_USED_MAILER') == "phpmailer") {
             // returns true if successful, false if not
-            return $this->sendMailWithPHPMailer(
-                $user_email, $from_email, $from_name, $subject, $body
-            );
+            return $this->sendMailWithPHPMailer($user_email, $from_email, $from_name, $subject, $body);
         }
 
-        if (Config::get('EMAIL_USED_MAILER') == "swiftmailer") {
+        if(Config::get('EMAIL_USED_MAILER') == "swiftmailer") {
             return $this->sendMailWithSwiftMailer();
         }
 
-        if (Config::get('EMAIL_USED_MAILER') == "native") {
+        if(Config::get('EMAIL_USED_MAILER') == "native") {
             return $this->sendMailWithNativeMailFunction();
         }
     }
@@ -38,12 +34,11 @@ class Mail
      * @throws Exception
      * @throws phpmailerException
      */
-    public function sendMailWithPHPMailer($user_email, $from_email, $from_name, $subject, $body)
-    {
+    public function sendMailWithPHPMailer($user_email, $from_email, $from_name, $subject, $body) {
         $mail = new PHPMailer;
 
         // if you want to send mail via PHPMailer using SMTP credentials
-        if (Config::get('EMAIL_USE_SMTP')) {
+        if(Config::get('EMAIL_USE_SMTP')) {
             // set PHPMailer to use SMTP
             $mail->IsSMTP();
             // 0 = off, 1 = commands, 2 = commands and data, perfect to see SMTP errors
@@ -51,7 +46,7 @@ class Mail
             // enable SMTP authentication
             $mail->SMTPAuth = Config::get('EMAIL_SMTP_AUTH');
             // encryption
-            if (Config::get('EMAIL_SMTP_ENCRYPTION')) {
+            if(Config::get('EMAIL_SMTP_ENCRYPTION')) {
                 $mail->SMTPSecure = Config::get('EMAIL_SMTP_ENCRYPTION');
             }
             // set SMTP provider's credentials
@@ -74,7 +69,7 @@ class Mail
         // try to send mail
         $mail->Send();
 
-        if ($mail) {
+        if($mail) {
             return true;
         } else {
             // if not successful, copy errors into Mail's error property
@@ -89,8 +84,7 @@ class Mail
      *
      * @return bool
      */
-    public function sendMailWithSwiftMailer()
-    {
+    public function sendMailWithSwiftMailer() {
         // no code yet, so we just return something to make IDEs and code analyzer tools happy
         return false;
     }
@@ -103,14 +97,12 @@ class Mail
      * @see http://stackoverflow.com/a/24644450/1114320
      * @see http://www.php.net/manual/en/function.mail.php
      */
-    public function sendMailWithNativeMailFunction()
-    {
+    public function sendMailWithNativeMailFunction() {
         // no code yet, so we just return something to make IDEs and code analyzer tools happy
         return false;
     }
 
-    public function getError()
-    {
+    public function getError() {
         return $this->error;
     }
 }

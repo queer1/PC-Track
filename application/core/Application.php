@@ -4,8 +4,7 @@
  * Class Application
  * The heart of the application
  */
-class Application
-{
+class Application {
     /** @var mixed Instance of the controller */
     private $controller;
 
@@ -21,8 +20,7 @@ class Application
     /**
      * Start the application, analyze URL elements, call according controller/method or relocate to fallback location
      */
-    public function __construct()
-    {
+    public function __construct() {
         // create array with URL parts in $url
         $this->splitUrl();
 
@@ -30,7 +28,7 @@ class Application
         $this->createControllerAndActionNames();
 
         // does such a controller exist ?
-        if (file_exists(PATH_CONTROLLER . $this->controller_name . '.php')) {
+        if(file_exists(PATH_CONTROLLER . $this->controller_name . '.php')) {
 
             // load this file and create this controller
             // example: if controller would be "car", then this line would translate into: $this->car = new car();
@@ -38,8 +36,8 @@ class Application
             $this->controller = new $this->controller_name();
 
             // check for method: does such a method exist in the controller ?
-            if (method_exists($this->controller, $this->action_name)) {
-                if (!empty($this->parameters)) {
+            if(method_exists($this->controller, $this->action_name)) {
+                if(!empty($this->parameters)) {
                     // call the method and pass arguments to it
                     call_user_func_array(array($this->controller, $this->action_name), $this->parameters);
                 } else {
@@ -57,9 +55,8 @@ class Application
     /**
      * Get and split the URL
      */
-    private function splitUrl()
-    {
-        if (Request::get('url')) {
+    private function splitUrl() {
+        if(Request::get('url')) {
 
             // split URL
             $url = trim(Request::get('url'), '/');
@@ -82,15 +79,14 @@ class Application
      * Checks if controller and action names are given. If not, default values are put into the properties.
      * Also renames controller to usable name.
      */
-    private function createControllerAndActionNames()
-    {
+    private function createControllerAndActionNames() {
         // check for controller: no controller given ? then make controller = default controller (from config)
-        if (!$this->controller_name) {
+        if(!$this->controller_name) {
             $this->controller_name = DEFAULT_CONTROLLER;
         }
 
         // check for action: no action given ? then make action = default action (from config)
-        if (!$this->action_name OR (strlen($this->action_name) == 0)) {
+        if(!$this->action_name OR (strlen($this->action_name) == 0)) {
             $this->action_name = DEFAULT_ACTION;
         }
 
