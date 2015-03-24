@@ -1,0 +1,18 @@
+{
+    "name": "tankekiller125/PC-Project",
+    "type": "project",
+    "description": "A rich powerful easy to use Tracking system for PC Techs and Companies",
+    "keywords": ["powerful", "easy", "tracking", "repair", "computers", "pc"],
+    "homepage": "https://github.com/tankerkiller125/PC-Track",
+    "license": "MIT",
+    "require-dev": {
+        "php": ">=5.5.0",
+        "phpmailer/phpmailer": "~5.2",
+        "gregwar/captcha": "~1.0.12",
+        "phpunit/phpunit": "~4.5",
+        "tracy/tracy": "*"
+    },
+    "autoload": {
+        "psr-4": { "": ["application/core/", "application/model/"] }
+    }
+}
