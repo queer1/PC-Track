@@ -16,7 +16,6 @@
         "php": ">=5.5.0",
         "phpmailer/phpmailer": "~5.2",
         "gregwar/captcha": "~1.0.12",
-        "phpunit/phpunit": "~4.5",
         "tracy/tracy": "*"
     },
     "autoload": {

@@ -7,53 +7,44 @@
  */
 class UserRoleModel {
     /**
-     * Upgrades / downgrades the user's account. Currently it's just the field user_account_type in the database that
-     * can be 1 or 2 (maybe "basic" or "premium"). Put some more complex stuff in here, maybe a pay-process or whatever
-     * you like.
-     *
-     * @param $type
-     *
-     * @return bool
+     * @param $user_id
+     * @param $new_perm
      */
-    public static function changeUserRole($type) {
-        if(!$type) {
-            return false;
-        }
-
-        // save new role to database
-        if(self::saveRoleToDatabase($type)) {
-            Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_TYPE_CHANGE_SUCCESSFUL'));
-            return true;
-        } else {
-            Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_TYPE_CHANGE_FAILED'));
-            return false;
-        }
+    public static function addPerm($user_id, $new_perm) {
+        $newset = array_push($new_perm, UserRoleModel::getPerms($user_id));
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "UPDATE users SET perms = :new WHERE user_id = :user_id";
+        $query = $database->prepare($sql);
+        $query->execute(array(':user_id' => $user_id, ':new' => json_encode($newset)));
     }
 
     /**
-     * Writes the new account type marker to the database and to the session
-     *
-     * @param $type
-     *
-     * @return bool
+     * Get User permissions!
+     * @param $user_id
+     * @return array $perms
      */
-    public static function saveRoleToDatabase($type) {
-        // if $type is not 1 or 2
-        if(!in_array($type, [1, 2])) {
-            return false;
-        }
-
+    public static function getPerms($user_id) {
         $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "SELECT user_permissions
+                FROM users WHERE user_id = :user_id LIMIT 1";
+        $query = $database->prepare($sql);
+        $query->execute(array(':user_id' => $user_id));
 
-        $query = $database->prepare("UPDATE users SET user_account_type = :new_type WHERE user_id = :user_id LIMIT 1");
-        $query->execute(array(':new_type' => $type, ':user_id' => Session::get('user_id')));
+        $perms = json_decode($query->fetch(), true);
+        return $perms;
+    }
 
-        if($query->rowCount() == 1) {
-            // set account type in session
-            Session::set('user_account_type', $type);
-            return true;
-        }
-
-        return false;
+    /**
+     * @param $user_id
+     * @param $removed_perm
+     */
+    public static function removePerm($user_id, $removed_perm) {
+        $original = UserRoleModel::getPerms($user_id);
+        $being_removed = array_search($removed_perm, $original);
+        unset($original[$being_removed]);
+        $database = DatabaseFactory::getFactory()->getConnection();
+        $sql = "UPDATE users SET perms = :new WHERE user_id = :user_id";
+        $query = $database->prepare($sql);
+        $query->execute(array(':new' => json_encode($original), ':user_id' => $user_id));
     }
 }
