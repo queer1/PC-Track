@@ -32,7 +32,7 @@ class UserRoleModel {
         }
         self::$getPermsQuery->execute(array(':user_id' => $user_id));
 
-        $perms = json_decode($query->fetch(), true);
+        $perms = json_decode(self::$getPermsQuery-->fetch(), true);
         return $perms;
     }
 
