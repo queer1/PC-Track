@@ -15,10 +15,11 @@ class UserRoleModel {
      */
     public static function addPerm($user_id, $new_perm) {
         if(self::$addPermQuery === null){
-            self::$addPermQuery = DatabaseFactory::getFactory()->getConnection()->prepare("UPDATE users SET perms = :new WHERE user_id = :user_id")
+            self::$addPermQuery = DatabaseFactory::getFactory()->getConnection()->prepare("UPDATE users SET perms = :new WHERE user_id = :user_id");
         }
         $newset = array_push($new_perm, UserRoleModel::getPerms($user_id));
         self::$addPermQuery->execute(array(':user_id' => $user_id, ':new' => json_encode($newset)));
+        Session::add('feedback_positive', 'User perm added successfully!');
     }
 
     /**
@@ -28,11 +29,11 @@ class UserRoleModel {
      */
     public static function getPerms($user_id) {
         if(self::$getPermsQuery === null){
-            self::$getPermsQuery = DatabaseFactory::getFactory()->getConnection()->prepare("SELECT user_permissions FROM users WHERE user_id = :user_id LIMIT 1");
+            self::$getPermsQuery = DatabaseFactory::getFactory()->getConnection()->prepare("SELECT perms FROM users WHERE user_id = :user_id LIMIT 1");
         }
         self::$getPermsQuery->execute(array(':user_id' => $user_id));
 
-        $perms = json_decode(self::$getPermsQuery-->fetch(), true);
+        $perms = json_decode(self::$getPermsQuery->fetch(PDO::FETCH_ASSOC), true);
         return $perms;
     }
 
@@ -48,5 +49,6 @@ class UserRoleModel {
         $being_removed = array_search($removed_perm, $original);
         unset($original[$being_removed]);
         self::$removePermQuery->execute(array(':new' => json_encode($original), ':user_id' => $user_id));
+        Session::add('feedback_positive', 'Removed that permission!');
     }
 }
