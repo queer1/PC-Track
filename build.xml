@@ -1,4 +1,4 @@
-<?xml version="1.0">
+<?xml version="1.0"?>
 <project name="lint" default="main">
     <fileset dir="." id="phpfiles">
         <include name="**/*.php"/>
