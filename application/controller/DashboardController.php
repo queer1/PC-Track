@@ -20,4 +20,7 @@ class DashboardController extends Controller {
     public function index() {
         $this->View->render('dashboard/index');
     }
+    public function newpc() {
+        $this->View->render('dashboard/newpc');
+    }
 }

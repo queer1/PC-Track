@@ -92,10 +92,10 @@ class View {
         require Config::get('PATH_VIEW') . '_templates/header.php';
 
         foreach($filenames as $filename) {
-            require Config::get('PATH_VIEW') . $filename . '.php';
+            require PATH_VIEW . $filename . '.php';
         }
 
-        require Config::get('PATH_VIEW') . '_templates/footer.php';
+        require PATH_VIEW . '_templates/footer.php';
     }
 
     /**
@@ -112,9 +112,9 @@ class View {
             }
         }
 
-        require Config::get('PATH_VIEW') . '_templates/header.php';
-        require Config::get('PATH_VIEW') . $filename . '.php';
-        require Config::get('PATH_VIEW') . '_templates/footer.php';
+        require PATH_VIEW . '_templates/header.php';
+        require PATH_VIEW . $filename . '.php';
+        require PATH_VIEW . '_templates/footer.php';
     }
 
     /**
@@ -129,7 +129,7 @@ class View {
             }
         }
 
-        require Config::get('PATH_VIEW') . $filename . '.php';
+        require PATH_VIEW . $filename . '.php';
     }
 
     /**
@@ -146,7 +146,7 @@ class View {
     public function renderFeedbackMessages() {
         // echo out the feedback messages (errors and success messages etc.),
         // they are in $_SESSION["feedback_positive"] and $_SESSION["feedback_negative"]
-        require Config::get('PATH_VIEW') . '_templates/feedback.php';
+        require PATH_VIEW . '_templates/feedback.php';
 
         // delete these messages (as they are not needed anymore and we want to avoid to show them twice
         Session::set('feedback_positive', null);

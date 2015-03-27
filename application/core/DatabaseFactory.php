@@ -1,7 +1,5 @@
 <?php
 
-require '../application/config/config' . Environment::get() . '.php';
-
 class DatabaseFactory {
     private static $factory;
     private $database;

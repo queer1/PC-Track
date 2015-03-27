@@ -268,6 +268,7 @@ class LoginController extends Controller {
      * Maybe refactor this sometime.
      */
     public function showCaptcha() {
+        header('Content-Type: image/jpeg');
         CaptchaModel::generateAndShowCaptcha();
     }
 }

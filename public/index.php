@@ -11,7 +11,14 @@
 
 // auto-loading the classes (currently only from application/libs) via Composer's PSR-4 auto-loader
 // later it might be useful to use a namespace here, but for now let's keep it as simple as possible
-require '../vendor/autoload.php';
+if(!file_exists('../vendor/autoload.php')) {
+    echo 'It seems that you forgot to run composer update!';
+} else {
+    require '../vendor/autoload.php';
+    require '../application/config/config.' . Environment::get() . '.php';
+}
 
+use Tracy\Debugger;
+Debugger::enable();
 // start our application
 new Application();

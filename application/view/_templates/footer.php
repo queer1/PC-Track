@@ -1,7 +1,10 @@
-<div class="footer"></div>
-</div><!-- close class="wrapper" -->
-
-<!-- the support button on the top right -->
-<a class="support-button" href="https://affiliates.a2hosting.com/idevaffiliate.php?id=4471&url=579" target="_blank"></a>
-</body>
+        <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/js/materialize.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('.button-collapse').sideNav({menuWidth: 240, activationWidth: 70});
+            });
+        </script>
+        <?php dump($_SESSION); ?>
+    </body>
 </html>

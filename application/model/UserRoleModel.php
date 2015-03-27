@@ -8,8 +8,10 @@
 class UserRoleModel {
     public static $addPermQuery = null;
     public static $getPermsQuery = null;
+    public static $getPermQuery = null;
     public static $removePermQuery = null;
     /**
+     * Adding A permission!
      * @param $user_id
      * @param $new_perm
      */
@@ -23,7 +25,7 @@ class UserRoleModel {
     }
 
     /**
-     * Get User permissions!
+     * Get ALL User permissions!
      * @param $user_id
      * @return array $perms
      */
@@ -38,6 +40,25 @@ class UserRoleModel {
     }
 
     /**
+     * See if a user has A permission
+     * @param $user_id
+     * @param $perm_name
+     * @return bool
+     */
+    public static function getPerm($user_id, $perm_name) {
+        if(self::$getPermQuery === null) {
+            self::$getPermQuery = DatabaseFactory::getFactory()->getConnection()->prepare("SELECT perms FROM user WHERE user_id = :user_id LIMIT 1");
+        }
+        self::$getPermQuery->execute(array(':user_id' => $user_id));
+        //search array for the correct perm and if it exist return true
+        if(in_array($perm_name, self::$getPermQuery->fetch(PDO::FETCH_ASSOC))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    /**
+     * Remove A user permission
      * @param $user_id
      * @param $removed_perm
      */

@@ -1,90 +1,47 @@
-<!doctype html>
-<html>
-<head>
-    <!-- META -->
-    <meta charset="utf-8">
-    <!-- CSS -->
-    <link rel="stylesheet" href="<?php echo Config::get('URL'); ?>css/style.css"/>
-</head>
-<body>
-<!-- wrapper, to center website -->
-<div class="wrapper">
+<html itemscope itemtype="http://scheme.org/Article" lang="en">
+    <head>
+        <title><?php echo Config::get('SITE_NAME'); ?></title>
+        <meta charset="UTF-8">
+        <meta name="description" content="<?php echo Config::get('SITE_DESCRIPTION'); ?>">
 
-    <!-- logo -->
-    <div class="logo"></div>
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@<?php echo Config::get('TWITTER'); ?>">
+        <meta name="twitter:title" content="<?php echo Config::get('SITE_NAME'); ?>">
+        <meta name="twitter:description" content="<?php echo Config::get('SITE_DESCRIPTION'); ?>">
 
-    <!-- navigation -->
-    <ul class="navigation">
-        <li <?php if(View::checkForActiveController($filename, "index")) {
-            echo ' class="active" ';
-        } ?> >
-            <a href="<?php echo Config::get('URL'); ?>index/index">Index</a>
-        </li>
-        <li <?php if(View::checkForActiveController($filename, "overview")) {
-            echo ' class="active" ';
-        } ?> >
-            <a href="<?php echo Config::get('URL'); ?>profile/index">Profiles</a>
-        </li>
-        <?php if(Session::userIsLoggedIn()) { ?>
-            <li <?php if(View::checkForActiveController($filename, "dashboard")) {
-                echo ' class="active" ';
-            } ?> >
-                <a href="<?php echo Config::get('URL'); ?>dashboard/index">Dashboard</a>
-            </li>
-            <li <?php if(View::checkForActiveController($filename, "note")) {
-                echo ' class="active" ';
-            } ?> >
-                <a href="<?php echo Config::get('URL'); ?>note/index">My Notes</a>
-            </li>
-        <?php } else { ?>
-            <!-- for not logged in users -->
-            <li <?php if(View::checkForActiveControllerAndAction($filename, "login/index")) {
-                echo ' class="active" ';
-            } ?> >
-                <a href="<?php echo Config::get('URL'); ?>login/index">Login</a>
-            </li>
-            <li <?php if(View::checkForActiveControllerAndAction($filename, "login/register")) {
-                echo ' class="active" ';
-            } ?> >
-                <a href="<?php echo Config::get('URL'); ?>login/register">Register</a>
-            </li>
-        <?php } ?>
-    </ul>
-
-    <!-- my account -->
-    <ul class="navigation right">
-        <?php if(Session::userIsLoggedIn()) : ?>
-            <li <?php if(View::checkForActiveController($filename, "login")) {
-                echo ' class="active" ';
-            } ?> >
-                <a href="<?php echo Config::get('URL'); ?>login/showprofile">My Account</a>
-                <ul class="navigation-submenu">
-                    <li <?php if(View::checkForActiveController($filename, "login")) {
-                        echo ' class="active" ';
-                    } ?> >
-                        <a href="<?php echo Config::get('URL'); ?>login/changeUserRole">Change account type</a>
-                    </li>
-                    <li <?php if(View::checkForActiveController($filename, "login")) {
-                        echo ' class="active" ';
-                    } ?> >
-                        <a href="<?php echo Config::get('URL'); ?>login/editAvatar">Edit your avatar</a>
-                    </li>
-                    <li <?php if(View::checkForActiveController($filename, "login")) {
-                        echo ' class="active" ';
-                    } ?> >
-                        <a href="<?php echo Config::get('URL'); ?>login/editusername">Edit my username</a>
-                    </li>
-                    <li <?php if(View::checkForActiveController($filename, "login")) {
-                        echo ' class="active" ';
-                    } ?> >
-                        <a href="<?php echo Config::get('URL'); ?>login/edituseremail">Edit my email</a>
-                    </li>
-                    <li <?php if(View::checkForActiveController($filename, "login")) {
-                        echo ' class="active" ';
-                    } ?> >
-                        <a href="<?php echo Config::get('URL'); ?>login/logout">Logout</a>
-                    </li>
+        <!-- CSS -->
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/materialize/0.95.3/css/materialize.min.css">
+    </head>
+    <body>
+    <header>
+        <nav>
+            <div class="nav-wrapper">
+                <a href="#!" class="brand-logo"><?php echo Config::get('SITE_NAME'); ?></a>
+                <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+                <?php if(Session::get('user_logged_in')) { ?>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="sass.html">Sass</a></li>
+                    <li><a href="components.html">Components</a></li>
+                    <li><a href="javascript.html">Javascript</a></li>
+                    <li><a href="mobile.html">Mobile</a></li>
                 </ul>
-            </li>
-        <?php endif; ?>
-    </ul>
+                <ul class="side-nav" id="mobile-demo">
+                    <li><a href="sass.html">Sass</a></li>
+                    <li><a href="components.html">Components</a></li>
+                    <li><a href="javascript.html">Javascript</a></li>
+                    <li><a href="mobile.html">Mobile</a></li>
+                </ul>
+                <?php } else { ?>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="login">Login</a></li>
+                </ul>
+                <ul class="side-nav" id="mobile-demo">
+                    <li class="logo">
+                        <a href="!#"><?php echo Config::get('SITE_NAME'); ?></a>
+                    </li>
+                    <li><a href="login">Login</a></li>
+                </ul>
+                <?php } ?>
+            </div>
+        </nav>
+    </header>

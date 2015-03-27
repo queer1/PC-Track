@@ -1,35 +1,33 @@
+
 <div class="container">
-
-    <!-- echo out the system feedback (error and success messages) -->
-    <?php $this->renderFeedbackMessages(); ?>
-
-    <div class="login-page-box">
-        <div class="table-wrapper">
-
-            <!-- login box on left side -->
-            <div class="login-box">
-                <h2>Login here</h2>
-
-                <form action="<?php echo Config::get('URL'); ?>login/login" method="post">
-                    <input type="text" name="user_name" placeholder="Username or email" required/>
-                    <input type="password" name="user_password" placeholder="Password" required/>
-                    <label for="set_remember_me_cookie" class="remember-me-label">
-                        <input type="checkbox" name="set_remember_me_cookie" class="remember-me-checkbox"/>
-                        Remember me for 2 weeks
-                    </label>
-                    <input type="submit" class="login-submit-button" value="Log in"/>
-                </form>
-                <div class="link-forgot-my-password">
-                    <a href="<?php echo Config::get('URL'); ?>login/requestPasswordReset">I forgot my password</a>
+    <form action="<?php Config::get('URL'); ?>login/login" method="post">
+        <div class="row">
+            <div class="col s12">
+                <h4>Login to <?php echo Config::get('SITE_NAME'); ?></h4>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="email" type="email" name="user_name" class="validate">
+                        <label for="email">Email</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input pattern=".{6,}" id="password" type="password" name="user_password" class="validate">
+                        <label for="password">Password</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s4">
+                        <input id="rememberme" type="checkbox" name="set_remember_me_cookie">
+                        <label for="rememberme">Remember Me</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s6">
+                        <button type="submit" class="btn waves-effect waves-light">Log In</button>
+                    </div>
                 </div>
             </div>
-
-            <!-- register box on right side -->
-            <div class="register-box">
-                <h2>No account yet ?</h2>
-                <a href="<?php echo Config::get('URL'); ?>login/register">Register</a>
-            </div>
-
         </div>
-    </div>
+    </form>
 </div>
