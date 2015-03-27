@@ -10,7 +10,6 @@ before_install:
 before_script:
    - pear channel-discover pear.phing.info
    - pear install phing/phing
-   - pear channel-discover pear.phpdoc.org
    - pear install pear/phpDocumentor
    - composer self-update
    - composer install --prefer-source --no-interaction --dev
