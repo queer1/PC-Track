@@ -10,18 +10,10 @@ before_install:
 before_script:
    - pear channel-discover pear.phing.info
    - pear install phing/phing
-   - pear install pear/phpDocumentor
    - composer self-update
    - composer install --prefer-source --no-interaction --dev
 
 script:
    # real testing
    - phpunit phing -f build.xml phplint
-   # automated doc creation and pushing. (We'll see how this goes)
-   - phpdoc -d ./ -t ./site/docs
-   - cd ./site
-   - git init
-   - git remote add origin https://github.com/tankerkiller125/MC-Donations.git
-   - git add -a
-   - git push origin gh-pages --force
 
