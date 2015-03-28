@@ -20,13 +20,18 @@ before_script:
 script:
   - phing -f build.xml phplint
   - rm -rf ./vendor
-  - phpdoc -d ./ -t ./docs
-after_success:
+  - mkdir ./docs
   - cd ./docs
   - git init
   - git config --global user.email "tankerkiller125@gmail.com"
   - git config --global user.name "tankerkiller125"
   - git remote add origin git@github.com:tankerkiller125/PC-Track.git
+  - git checkout --orphan gh-pages
+  - git rm -rf .
+  - cd ../
+  - phpdoc -d ./ -t ./docs
+after_success:
+  - cd ./docs
   - git add --all
   - git commit -a -m "Setting up docs!"
   - git fetch origin
