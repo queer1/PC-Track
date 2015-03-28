@@ -2,7 +2,7 @@
 <project name="lint" default="main">
     <fileset dir="." id="phpfiles">
         <include name="**/*.php"/>
-        <include name="vendor/**"/>
+        <exclude name="vendor/**"/>
     </fileset>
     <target name="main">
         <phingcall target="phplint"/>
