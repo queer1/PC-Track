@@ -21,7 +21,13 @@ script:
   - phing -f build.xml phplint
   - rm -rf ./vendor
   - phpdoc -d ./ -t ./docs
-
+after_success:
+  - cd ./docs
+  - git init
+  - git remote add origin git@github.com:tankerkiller125/PC-Track.git
+  - git add -a
+  - git commit -a -m "Setting up docs!"
+  - git push origin gh-pages -f
 install:
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
