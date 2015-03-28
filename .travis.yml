@@ -19,7 +19,7 @@ before_script:
   - ssh-add id_rsa
 script:
   - phing -f build.xml phplint
-  - rm -r ./vendor
+  - rm -rf ./vendor
   - phpdoc -d ./ -t ./docs
 
 install:
