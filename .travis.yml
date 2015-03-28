@@ -11,11 +11,13 @@ branches:
 before_script:
   - pear channel-discover pear.phing.info
   - pear install phing/phing
+  - pear install phpdoc/phpDocumentation
   - phpenv rehash
   - openssl aes-256-cbc -K $encrypted_7d50c4001e84_key -iv $encrypted_7d50c4001e84_iv -in id_rsa.enc -out id_rsa -d
-
+  - ssh-add .travis/id_rsa
 script:
-    - phing -f build.xml phplint
+  - phing -f build.xml phplint
+  - phpdoc -d ./ -t ./docs
 
 install:
   - composer self-update
