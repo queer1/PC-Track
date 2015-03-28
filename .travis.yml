@@ -13,9 +13,10 @@ before_script:
   - pear install phing/phing
   - pear install phpdoc/phpDocumentor
   - phpenv rehash
-  - openssl aes-256-cbc -K $encrypted_7d50c4001e84_key -iv $encrypted_7d50c4001e84_iv -in id_rsa.enc -out id_rsa -d
+  - openssl aes-256-cbc -K $encrypted_7d50c4001e84_key -iv $encrypted_7d50c4001e84_iv -in id_rsa.enc -out id_rsa.pem -d
+  - chmod 600 .travis/id_rsa.pem
   - ssh-agent -s
-  - ssh-add .travis/id_rsa
+  - ssh-add .travis/id_rsa.pem
 script:
   - phing -f build.xml phplint
   - rm -r ./vendor
