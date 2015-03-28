@@ -27,7 +27,7 @@ script:
   - git config --global user.name "tankerkiller125"
   - git remote add origin git@github.com:tankerkiller125/PC-Track.git
   - git checkout --orphan gh-pages
-  - rm -rf ./
+  - rm -rf .
   - cd ../
   - phpdoc -d ./ -t ./docs
 after_success:
