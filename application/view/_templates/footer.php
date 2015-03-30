@@ -3,6 +3,7 @@
         <script>
             $(document).ready(function() {
                 $('.button-collapse').sideNav({menuWidth: 240, activationWidth: 70});
+                $('.dropdown-button').dropdown({ hover: false, belowOrigin: true});
             });
         </script>
         <?php dump($_SESSION); ?>
