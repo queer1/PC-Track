@@ -14,11 +14,26 @@ before_script:
   - pear install phpdoc/phpDocumentor
   - phpenv rehash
   - openssl aes-256-cbc -K $encrypted_7d50c4001e84_key -iv $encrypted_7d50c4001e84_iv -in id_rsa.enc -out id_rsa -d
-  - ssh-add .travis/id_rsa
+  - chmod 600 id_rsa
+  - eval "$(ssh-agent)"
+  - ssh-add id_rsa
 script:
   - phing -f build.xml phplint
+  - rm -rf ./vendor
+  - mkdir ./docs
+  - cd ./docs
+  - git init
+  - git config --global user.email "tankerkiller125@gmail.com"
+  - git config --global user.name "tankerkiller125"
+  - git remote add origin git@github.com:tankerkiller125/PC-Track.git
+  - git checkout --orphan gh-pages
+  - cd ../
   - phpdoc -d ./ -t ./docs
-
+  - cd ./docs
+  - git add --all
+  - git commit -a -m "Setting up docs!"
+  - git fetch origin
+  - git push origin gh-pages -f
 install:
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
