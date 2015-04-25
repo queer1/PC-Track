@@ -23,7 +23,7 @@ class UserModel {
 
         $all_users_profiles = array();
 
-        foreach($query->fetchAll() as $user) {
+        foreach ($query->fetchAll() as $user) {
             $all_users_profiles[$user->user_id] = new stdClass();
             $all_users_profiles[$user->user_id]->user_id = $user->user_id;
             $all_users_profiles[$user->user_id]->user_name = $user->user_name;
@@ -50,8 +50,8 @@ class UserModel {
 
         $user = $query->fetch();
 
-        if($query->rowCount() == 1) {
-            if(Config::get('USE_GRAVATAR')) {
+        if ($query->rowCount() == 1) {
+            if (Config::get('USE_GRAVATAR')) {
                 $user->user_avatar_link = AvatarModel::getGravatarLinkByEmail($user->user_email);
             } else {
                 $user->user_avatar_link = AvatarModel::getPublicAvatarFilePathOfUser($user->user_has_avatar, $user->user_id);
@@ -88,13 +88,13 @@ class UserModel {
      */
     public static function editUserName($new_user_name) {
         // new username same as old one ?
-        if($new_user_name == Session::get('user_name')) {
+        if ($new_user_name == Session::get('user_name')) {
             Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_SAME_AS_OLD_ONE'));
             return false;
         }
 
         // username cannot be empty and must be azAZ09 and 2-64 characters
-        if(!preg_match("/^[a-zA-Z0-9]{2,64}$/", $new_user_name)) {
+        if (!preg_match("/^[a-zA-Z0-9]{2,64}$/", $new_user_name)) {
             Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_DOES_NOT_FIT_PATTERN'));
             return false;
         }
@@ -103,13 +103,13 @@ class UserModel {
         $new_user_name = substr(strip_tags($new_user_name), 0, 64);
 
         // check if new username already exists
-        if(UserModel::doesUsernameAlreadyExist($new_user_name)) {
+        if (UserModel::doesUsernameAlreadyExist($new_user_name)) {
             Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_ALREADY_TAKEN'));
             return false;
         }
 
         $status_of_action = UserModel::saveNewUserName(Session::get('user_id'), $new_user_name);
-        if($status_of_action) {
+        if ($status_of_action) {
             Session::set('user_name', $new_user_name);
             Session::add('feedback_positive', Text::get('FEEDBACK_USERNAME_CHANGE_SUCCESSFUL'));
             return true;
@@ -131,7 +131,7 @@ class UserModel {
 
         $query = $database->prepare("SELECT user_id FROM users WHERE user_name = :user_name LIMIT 1");
         $query->execute(array(':user_name' => $user_name));
-        if($query->rowCount() == 0) {
+        if ($query->rowCount() == 0) {
             return false;
         }
         return true;
@@ -150,7 +150,7 @@ class UserModel {
 
         $query = $database->prepare("UPDATE users SET user_name = :user_name WHERE user_id = :user_id LIMIT 1");
         $query->execute(array(':user_name' => $new_user_name, ':user_id' => $user_id));
-        if($query->rowCount() == 1) {
+        if ($query->rowCount() == 1) {
             return true;
         }
         return false;
@@ -165,13 +165,13 @@ class UserModel {
      */
     public static function editUserEmail($new_user_email) {
         // email provided ?
-        if(empty($new_user_email)) {
+        if (empty($new_user_email)) {
             Session::add('feedback_negative', Text::get('FEEDBACK_EMAIL_FIELD_EMPTY'));
             return false;
         }
 
         // check if new email is same like the old one
-        if($new_user_email == Session::get('user_email')) {
+        if ($new_user_email == Session::get('user_email')) {
             Session::add('feedback_negative', Text::get('FEEDBACK_EMAIL_SAME_AS_OLD_ONE'));
             return false;
         }
@@ -179,7 +179,7 @@ class UserModel {
         // user's email must be in valid email format, also checks the length
         // @see http://stackoverflow.com/questions/21631366/php-filter-validate-email-max-length
         // @see http://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address
-        if(!filter_var($new_user_email, FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($new_user_email, FILTER_VALIDATE_EMAIL)) {
             Session::add('feedback_negative', Text::get('FEEDBACK_EMAIL_DOES_NOT_FIT_PATTERN'));
             return false;
         }
@@ -188,14 +188,14 @@ class UserModel {
         $new_user_email = substr(strip_tags($new_user_email), 0, 254);
 
         // check if user's email already exists
-        if(UserModel::doesEmailAlreadyExist($new_user_email)) {
+        if (UserModel::doesEmailAlreadyExist($new_user_email)) {
             Session::add('feedback_negative', Text::get('FEEDBACK_USER_EMAIL_ALREADY_TAKEN'));
             return false;
         }
 
         // write to database, if successful ...
         // ... then write new email to session, Gravatar too (as this relies to the user's email address)
-        if(UserModel::saveNewEmailAddress(Session::get('user_id'), $new_user_email)) {
+        if (UserModel::saveNewEmailAddress(Session::get('user_id'), $new_user_email)) {
             Session::set('user_email', $new_user_email);
             Session::set('user_gravatar_image_url', AvatarModel::getGravatarLinkByEmail($new_user_email));
             Session::add('feedback_positive', Text::get('FEEDBACK_EMAIL_CHANGE_SUCCESSFUL'));
@@ -218,7 +218,7 @@ class UserModel {
 
         $query = $database->prepare("SELECT user_id FROM users WHERE user_email = :user_email LIMIT 1");
         $query->execute(array(':user_email' => $user_email));
-        if($query->rowCount() == 0) {
+        if ($query->rowCount() == 0) {
             return false;
         }
         return true;
@@ -238,7 +238,7 @@ class UserModel {
         $query = $database->prepare("UPDATE users SET user_email = :user_email WHERE user_id = :user_id LIMIT 1");
         $query->execute(array(':user_email' => $new_user_email, ':user_id' => $user_id));
         $count = $query->rowCount();
-        if($count == 1) {
+        if ($count == 1) {
             return true;
         }
         return false;

@@ -28,16 +28,16 @@ class Application {
         $this->createControllerAndActionNames();
 
         // does such a controller exist ?
-        if(file_exists(PATH_CONTROLLER . $this->controller_name . '.php')) {
+        if (file_exists(PATH_CONTROLLER.$this->controller_name.'.php')) {
 
             // load this file and create this controller
             // example: if controller would be "car", then this line would translate into: $this->car = new car();
-            require PATH_CONTROLLER . $this->controller_name . '.php';
+            require PATH_CONTROLLER.$this->controller_name.'.php';
             $this->controller = new $this->controller_name();
 
             // check for method: does such a method exist in the controller ?
-            if(method_exists($this->controller, $this->action_name)) {
-                if(!empty($this->parameters)) {
+            if (method_exists($this->controller, $this->action_name)) {
+                if (!empty($this->parameters)) {
                     // call the method and pass arguments to it
                     call_user_func_array(array($this->controller, $this->action_name), $this->parameters);
                 } else {
@@ -45,10 +45,10 @@ class Application {
                     $this->controller->{$this->action_name}();
                 }
             } else {
-                header('location: ' . URL . 'error');
+                header('location: '.URL.'error');
             }
         } else {
-            header('location: ' . URL . 'error');
+            header('location: '.URL.'error');
         }
     }
 
@@ -56,7 +56,7 @@ class Application {
      * Get and split the URL
      */
     private function splitUrl() {
-        if(Request::get('url')) {
+        if (Request::get('url')) {
 
             // split URL
             $url = trim(Request::get('url'), '/');
@@ -81,16 +81,16 @@ class Application {
      */
     private function createControllerAndActionNames() {
         // check for controller: no controller given ? then make controller = default controller (from config)
-        if(!$this->controller_name) {
+        if (!$this->controller_name) {
             $this->controller_name = DEFAULT_CONTROLLER;
         }
 
         // check for action: no action given ? then make action = default action (from config)
-        if(!$this->action_name OR (strlen($this->action_name) == 0)) {
+        if (!$this->action_name OR (strlen($this->action_name) == 0)) {
             $this->action_name = DEFAULT_ACTION;
         }
 
         // rename controller name to real controller class/file name ("index" to "IndexController")
-        $this->controller_name = ucwords($this->controller_name) . 'Controller';
+        $this->controller_name = ucwords($this->controller_name).'Controller';
     }
 }
