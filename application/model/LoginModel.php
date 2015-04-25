@@ -17,7 +17,7 @@ class LoginModel {
      */
     public static function login($user_name, $user_password, $set_remember_me_cookie = null) {
         // we do negative-first checks here, for simplicity empty username and empty password in one line
-        if(empty($user_name) OR empty($user_password)) {
+        if (empty($user_name) OR empty($user_password)) {
             Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_OR_PASSWORD_FIELD_EMPTY'));
             return false;
         }
@@ -25,12 +25,12 @@ class LoginModel {
         // checks if user exists, if login is not blocked (due to failed logins) and if password fits the hash
         $result = self::validateAndGetUser($user_name, $user_password);
 
-        if(!$result) {
+        if (!$result) {
             return false;
         }
 
         // reset the failed login counter for that user (if necessary)
-        if($result->user_last_failed_login > 0) {
+        if ($result->user_last_failed_login > 0) {
             self::resetFailedLoginCounterOfUser($result->user_name);
         }
 
@@ -38,7 +38,7 @@ class LoginModel {
         self::saveTimestampOfLoginOfUser($result->user_name);
 
         // if user has checked the "remember me" checkbox, then write token into database and into cookie
-        if($set_remember_me_cookie) {
+        if ($set_remember_me_cookie) {
             self::setRememberMeInDatabaseAndCookie($result->user_id);
         }
 
@@ -64,19 +64,19 @@ class LoginModel {
         $result = UserModel::getUserDataByUsername($user_name);
 
         // Check if that user exists. We don't give back a cause in the feedback to avoid giving an attacker details.
-        if(!$result) {
+        if (!$result) {
             Session::add('feedback_negative', Text::get('FEEDBACK_LOGIN_FAILED'));
             return false;
         }
 
         // block login attempt if somebody has already failed 3 times and the last login attempt is less than 30sec ago
-        if(($result->user_failed_logins >= 3) AND ($result->user_last_failed_login > (time() - 30))) {
+        if (($result->user_failed_logins >= 3) AND ($result->user_last_failed_login > (time() - 30))) {
             Session::add('feedback_negative', Text::get('FEEDBACK_PASSWORD_WRONG_3_TIMES'));
             return false;
         }
 
         // if hash of provided password does NOT match the hash in the database: +1 failed-login counter
-        if(!password_verify($user_password, $result->user_password_hash)) {
+        if (!password_verify($user_password, $result->user_password_hash)) {
             self::incrementFailedLoginCounterOfUser($result->user_name);
             // we say "password wrong" here, but less details like "login failed" would be better (= less information)
             Session::add('feedback_negative', Text::get('FEEDBACK_PASSWORD_WRONG'));
@@ -84,7 +84,7 @@ class LoginModel {
         }
 
         // if user is not active (= has not verified account by verification mail)
-        if($result->user_active != 1) {
+        if ($result->user_active != 1) {
             Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_NOT_ACTIVATED_YET'));
             return false;
         }
@@ -157,9 +157,9 @@ class LoginModel {
         $sth->execute(array(':user_remember_me_token' => $random_token_string, ':user_id' => $user_id));
 
         // generate cookie string that consists of user id, random string and combined hash of both
-        $cookie_string_first_part = $user_id . ':' . $random_token_string;
+        $cookie_string_first_part = $user_id.':'.$random_token_string;
         $cookie_string_hash = hash('sha256', $cookie_string_first_part);
-        $cookie_string = $cookie_string_first_part . ':' . $cookie_string_hash;
+        $cookie_string = $cookie_string_first_part.':'.$cookie_string_hash;
 
         // set cookie
         setcookie('remember_me', $cookie_string, time() + Config::get('COOKIE_RUNTIME'), Config::get('COOKIE_PATH'));
@@ -199,21 +199,21 @@ class LoginModel {
      * @return bool success state
      */
     public static function loginWithCookie($cookie) {
-        if(!$cookie) {
+        if (!$cookie) {
             Session::add('feedback_negative', Text::get('FEEDBACK_COOKIE_INVALID'));
             return false;
         }
 
         // check cookie's contents, check if cookie contents belong together or token is empty
         list ($user_id, $token, $hash) = explode(':', $cookie);
-        if($hash !== hash('sha256', $user_id . ':' . $token) OR empty($token)) {
+        if ($hash !== hash('sha256', $user_id.':'.$token) OR empty($token)) {
             Session::add('feedback_negative', Text::get('FEEDBACK_COOKIE_INVALID'));
             return false;
         }
 
         // get data of user that has this id and this token
         $result = UserModel::getUserDataByUserIdAndToken($user_id, $token);
-        if($result) {
+        if ($result) {
             // successfully logged in, so we write all necessary data into the session and set "user_logged_in" to true
             self::setSuccessfulLoginIntoSession($result->user_id, $result->user_name, $result->user_email, $result->user_account_type);
             // save timestamp of this login in the database line of that user

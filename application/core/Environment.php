@@ -15,9 +15,9 @@ class Environment {
     }
 
     public static function get() {
-        if($_SERVER['REMOTE_ADDR'] == "::1" || $_SERVER['REMOTE_ADDR'] == "127.0.0.1") {
+        if ($_SERVER['REMOTE_ADDR'] == "::1" || $_SERVER['REMOTE_ADDR'] == "127.0.0.1") {
             return "development";
-        } elseif($_SERVER['HTTP_X_FORWARDED_FOR'] == "::1" || $_SERVER['HTTP_X_FORWARDED_FOR'] == "127.0.0.1") {
+        } elseif ($_SERVER['HTTP_X_FORWARDED_FOR'] == "::1" || $_SERVER['HTTP_X_FORWARDED_FOR'] == "127.0.0.1") {
             return "development";
         } else {
             return "production";

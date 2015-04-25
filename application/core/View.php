@@ -18,7 +18,7 @@ class View {
         $split_filename = explode("/", $filename);
         $active_controller = $split_filename[0];
 
-        if($active_controller == $navigation_controller) {
+        if ($active_controller == $navigation_controller) {
             return true;
         }
 
@@ -38,7 +38,7 @@ class View {
         $split_filename = explode("/", $filename);
         $active_action = $split_filename[1];
 
-        if($active_action == $navigation_action) {
+        if ($active_action == $navigation_action) {
             return true;
         }
 
@@ -63,7 +63,7 @@ class View {
         $navigation_controller = $split_filename[0];
         $navigation_action = $split_filename[1];
 
-        if($active_controller == $navigation_controller AND $active_action == $navigation_action) {
+        if ($active_controller == $navigation_controller AND $active_action == $navigation_action) {
             return true;
         }
 
@@ -78,24 +78,24 @@ class View {
      * @return bool
      */
     public function renderMulti($filenames, $data = null) {
-        if(!is_array($filenames)) {
+        if (!is_array($filenames)) {
             self::render($filenames, $data);
             return false;
         }
 
-        if($data) {
-            foreach($data as $key => $value) {
+        if ($data) {
+            foreach ($data as $key => $value) {
                 $this->{$key} = $value;
             }
         }
 
-        require Config::get('PATH_VIEW') . '_templates/header.php';
+        require Config::get('PATH_VIEW').'_templates/header.php';
 
-        foreach($filenames as $filename) {
-            require PATH_VIEW . $filename . '.php';
+        foreach ($filenames as $filename) {
+            require PATH_VIEW.$filename.'.php';
         }
 
-        require PATH_VIEW . '_templates/footer.php';
+        require PATH_VIEW.'_templates/footer.php';
     }
 
     /**
@@ -106,15 +106,15 @@ class View {
      * @param array $data Data to be used in the view
      */
     public function render($filename, $data = null) {
-        if($data) {
-            foreach($data as $key => $value) {
+        if ($data) {
+            foreach ($data as $key => $value) {
                 $this->{$key} = $value;
             }
         }
 
-        require PATH_VIEW . '_templates/header.php';
-        require PATH_VIEW . $filename . '.php';
-        require PATH_VIEW . '_templates/footer.php';
+        require PATH_VIEW.'_templates/header.php';
+        require PATH_VIEW.$filename.'.php';
+        require PATH_VIEW.'_templates/footer.php';
     }
 
     /**
@@ -123,13 +123,13 @@ class View {
      * @param mixed $data Data to be used in the view
      */
     public function renderWithoutHeaderAndFooter($filename, $data = null) {
-        if($data) {
-            foreach($data as $key => $value) {
+        if ($data) {
+            foreach ($data as $key => $value) {
                 $this->{$key} = $value;
             }
         }
 
-        require PATH_VIEW . $filename . '.php';
+        require PATH_VIEW.$filename.'.php';
     }
 
     /**
@@ -146,7 +146,7 @@ class View {
     public function renderFeedbackMessages() {
         // echo out the feedback messages (errors and success messages etc.),
         // they are in $_SESSION["feedback_positive"] and $_SESSION["feedback_negative"]
-        require PATH_VIEW . '_templates/feedback.php';
+        require PATH_VIEW.'_templates/feedback.php';
 
         // delete these messages (as they are not needed anymore and we want to avoid to show them twice
         Session::set('feedback_positive', null);

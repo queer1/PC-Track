@@ -23,7 +23,7 @@
             <div class="nav-wrapper">
                 <a href="#!" class="brand-logo"><?php echo Config::get('SITE_NAME'); ?></a>
                 <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
-                <?php if(Session::get('user_logged_in')) { ?>
+                <?php if (Session::get('user_logged_in')) { ?>
                 <ul class="right hide-on-med-and-down">
                     <li><a href="<?php echo URL ?>dashboard">Dashboard</a></li>
                     <li><a href="<?php echo URL ?>dashboard/newpc">Add PC</a></li>
