@@ -6,70 +6,54 @@
  * This class contains everything that is related to up- and downgrading accounts.
  */
 class UserRoleModel {
-    public static $addPermQuery = null;
-    public static $getPermsQuery = null;
-    public static $getPermQuery = null;
-    public static $removePermQuery = null;
     /**
-     * Adding A permission!
-     * @param $user_id
-     * @param $new_perm
-     */
-    public static function addPerm($user_id, $new_perm) {
-        if(self::$addPermQuery === null){
-            self::$addPermQuery = DatabaseFactory::getFactory()->getConnection()->prepare("UPDATE users SET perms = :new WHERE user_id = :user_id");
-        }
-        $newset = array_push($new_perm, UserRoleModel::getPerms($user_id));
-        self::$addPermQuery->execute(array(':user_id' => $user_id, ':new' => json_encode($newset)));
-        Session::add('feedback_positive', 'User perm added successfully!');
-    }
-
-    /**
-     * Get ALL User permissions!
-     * @param $user_id
-     * @return array $perms
-     */
-    public static function getPerms($user_id) {
-        if(self::$getPermsQuery === null){
-            self::$getPermsQuery = DatabaseFactory::getFactory()->getConnection()->prepare("SELECT perms FROM users WHERE user_id = :user_id LIMIT 1");
-        }
-        self::$getPermsQuery->execute(array(':user_id' => $user_id));
-
-        $perms = json_decode(self::$getPermsQuery->fetch(PDO::FETCH_ASSOC), true);
-        return $perms;
-    }
-
-    /**
-     * See if a user has A permission
-     * @param $user_id
-     * @param $perm_name
+     * Upgrades / downgrades the user's account. Currently it's just the field user_account_type in the database that
+     * can be 1 or 2 (maybe "basic" or "premium"). Put some more complex stuff in here, maybe a pay-process or whatever
+     * you like.
+     *
+     * @param $type
+     *
      * @return bool
      */
-    public static function getPerm($user_id, $perm_name) {
-        if(self::$getPermQuery === null) {
-            self::$getPermQuery = DatabaseFactory::getFactory()->getConnection()->prepare("SELECT perms FROM user WHERE user_id = :user_id LIMIT 1");
+    public static function changeUserRole($type) {
+        if(!$type) {
+            return false;
         }
-        self::$getPermQuery->execute(array(':user_id' => $user_id));
-        //search array for the correct perm and if it exist return true
-        if(in_array($perm_name, self::$getPermQuery->fetch(PDO::FETCH_ASSOC))) {
+
+        // save new role to database
+        if(self::saveRoleToDatabase($type)) {
+            Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_TYPE_CHANGE_SUCCESSFUL'));
             return true;
         } else {
+            Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_TYPE_CHANGE_FAILED'));
             return false;
         }
     }
+
     /**
-     * Remove A user permission
-     * @param $user_id
-     * @param $removed_perm
+     * Writes the new account type marker to the database and to the session
+     *
+     * @param $type
+     *
+     * @return bool
      */
-    public static function removePerm($user_id, $removed_perm) {
-        if(self::$removePermQuery === null){
-            self::$removePermQuery = DatabaseFactory::getFactory()->getConnection()->prepare("UPDATE users SET perms = :new WHERE user_id = :user_id");
+    public static function saveRoleToDatabase($type) {
+        // if $type is not 1 or 2
+        if(!in_array($type, [1, 2])) {
+            return false;
         }
-        $original = UserRoleModel::getPerms($user_id);
-        $being_removed = array_search($removed_perm, $original);
-        unset($original[$being_removed]);
-        self::$removePermQuery->execute(array(':new' => json_encode($original), ':user_id' => $user_id));
-        Session::add('feedback_positive', 'Removed that permission!');
+
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $database->prepare("UPDATE users SET user_account_type = :new_type WHERE user_id = :user_id LIMIT 1");
+        $query->execute(array(':new_type' => $type, ':user_id' => Session::get('user_id')));
+
+        if($query->rowCount() == 1) {
+            // set account type in session
+            Session::set('user_account_type', $type);
+            return true;
+        }
+
+        return false;
     }
 }

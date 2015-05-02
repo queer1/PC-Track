@@ -144,6 +144,29 @@ class PasswordResetModel {
     }
 
     /**
+     * Writes the new password to the database
+     *
+     * @param string $user_name username
+     * @param string $user_password_hash
+     * @param string $user_password_reset_hash
+     *
+     * @return bool
+     */
+    public static function saveNewUserPassword($user_name, $user_password_hash, $user_password_reset_hash) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $sql = "UPDATE users SET user_password_hash = :user_password_hash, user_password_reset_hash = NULL,
+                       user_password_reset_timestamp = NULL
+                 WHERE user_name = :user_name AND user_password_reset_hash = :user_password_reset_hash
+                       AND user_provider_type = :user_provider_type LIMIT 1";
+        $query = $database->prepare($sql);
+        $query->execute(array(':user_password_hash' => $user_password_hash, ':user_name' => $user_name, ':user_password_reset_hash' => $user_password_reset_hash, ':user_provider_type' => 'DEFAULT'));
+
+        // if one result exists, return true, else false. Could be written even shorter btw.
+        return ($query->rowCount() == 1 ? true : false);
+    }
+
+    /**
      * Set the new password (for DEFAULT user, FACEBOOK-users don't have a password)
      * Please note: At this point the user has already pre-verified via verifyPasswordReset() (within one hour),
      * so we don't need to check again for the 60min-limit here. In this method we authenticate
@@ -204,28 +227,5 @@ class PasswordResetModel {
         }
 
         return true;
-    }
-
-    /**
-     * Writes the new password to the database
-     *
-     * @param string $user_name username
-     * @param string $user_password_hash
-     * @param string $user_password_reset_hash
-     *
-     * @return bool
-     */
-    public static function saveNewUserPassword($user_name, $user_password_hash, $user_password_reset_hash) {
-        $database = DatabaseFactory::getFactory()->getConnection();
-
-        $sql = "UPDATE users SET user_password_hash = :user_password_hash, user_password_reset_hash = NULL,
-                       user_password_reset_timestamp = NULL
-                 WHERE user_name = :user_name AND user_password_reset_hash = :user_password_reset_hash
-                       AND user_provider_type = :user_provider_type LIMIT 1";
-        $query = $database->prepare($sql);
-        $query->execute(array(':user_password_hash' => $user_password_hash, ':user_name' => $user_name, ':user_password_reset_hash' => $user_password_reset_hash, ':user_provider_type' => 'DEFAULT'));
-
-        // if one result exists, return true, else false. Could be written even shorter btw.
-        return ($query->rowCount() == 1 ? true : false);
     }
 }

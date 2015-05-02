@@ -196,6 +196,19 @@ class RegistrationModel {
     }
 
     /**
+     * Deletes the user from users table. Currently used to rollback a registration when verification mail sending
+     * was not successful.
+     *
+     * @param $user_id
+     */
+    public static function rollbackRegistrationByUserId($user_id) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $database->prepare("DELETE FROM users WHERE user_id = :user_id");
+        $query->execute(array(':user_id' => $user_id));
+    }
+
+    /**
      * Sends the verification email (to confirm the account).
      * The construction of the mail $body looks weird at first, but it's really just a simple string.
      *
@@ -218,19 +231,6 @@ class RegistrationModel {
             Session::add('feedback_negative', Text::get('FEEDBACK_VERIFICATION_MAIL_SENDING_ERROR') . $mail->getError());
             return false;
         }
-    }
-
-    /**
-     * Deletes the user from users table. Currently used to rollback a registration when verification mail sending
-     * was not successful.
-     *
-     * @param $user_id
-     */
-    public static function rollbackRegistrationByUserId($user_id) {
-        $database = DatabaseFactory::getFactory()->getConnection();
-
-        $query = $database->prepare("DELETE FROM users WHERE user_id = :user_id");
-        $query->execute(array(':user_id' => $user_id));
     }
 
     /**

@@ -22,5 +22,9 @@ class Auth {
             // this is not optimal and will be fixed in future releases
             exit();
         }
+        if(Config::get('CASTLE_ENABLED') == 'true') {
+            Castle::setApiKey(Config::get('CASTLE_ID'));
+            Castle::authorize();
+        }
     }
 }

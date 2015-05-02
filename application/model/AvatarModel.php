@@ -36,6 +36,24 @@ class AvatarModel {
     }
 
     /**
+     * Gets the user's avatar file path
+     * @param $user_id integer The user's id
+     * @return string avatar picture path
+     */
+    public static function getPublicUserAvatarFilePathByUserId($user_id) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $database->prepare("SELECT user_has_avatar FROM users WHERE user_id = :user_id LIMIT 1");
+        $query->execute(array(':user_id' => $user_id));
+
+        if($query->fetch()->user_has_avatar) {
+            return Config::get('URL') . Config::get('PATH_AVATARS_PUBLIC') . $user_id . '.jpg';
+        }
+
+        return Config::get('URL') . Config::get('PATH_AVATARS_PUBLIC') . Config::get('AVATAR_DEFAULT_IMAGE');
+    }
+
+    /**
      * Create an avatar picture (and checks all necessary things too)
      * TODO decouple
      * TODO total rebuild
@@ -103,6 +121,18 @@ class AvatarModel {
     }
 
     /**
+     * Writes marker to database, saying user has an avatar now
+     *
+     * @param $user_id
+     */
+    public static function writeAvatarToDatabase($user_id) {
+        $database = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $database->prepare("UPDATE users SET user_has_avatar = TRUE WHERE user_id = :user_id LIMIT 1");
+        $query->execute(array(':user_id' => $user_id));
+    }
+
+    /**
      * Resize avatar image (while keeping aspect ratio and cropping it off sexy)
      *
      * TROUBLESHOOTING: You don't see the new image ? Press F5 or CTRL-F5 to refresh browser cache.
@@ -154,36 +184,6 @@ class AvatarModel {
         }
         // default return
         return false;
-    }
-
-    /**
-     * Writes marker to database, saying user has an avatar now
-     *
-     * @param $user_id
-     */
-    public static function writeAvatarToDatabase($user_id) {
-        $database = DatabaseFactory::getFactory()->getConnection();
-
-        $query = $database->prepare("UPDATE users SET user_has_avatar = TRUE WHERE user_id = :user_id LIMIT 1");
-        $query->execute(array(':user_id' => $user_id));
-    }
-
-    /**
-     * Gets the user's avatar file path
-     * @param $user_id integer The user's id
-     * @return string avatar picture path
-     */
-    public static function getPublicUserAvatarFilePathByUserId($user_id) {
-        $database = DatabaseFactory::getFactory()->getConnection();
-
-        $query = $database->prepare("SELECT user_has_avatar FROM users WHERE user_id = :user_id LIMIT 1");
-        $query->execute(array(':user_id' => $user_id));
-
-        if($query->fetch()->user_has_avatar) {
-            return Config::get('URL') . Config::get('PATH_AVATARS_PUBLIC') . $user_id . '.jpg';
-        }
-
-        return Config::get('URL') . Config::get('PATH_AVATARS_PUBLIC') . Config::get('AVATAR_DEFAULT_IMAGE');
     }
 
     /**

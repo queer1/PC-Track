@@ -19,6 +19,7 @@ if(!file_exists('../vendor/autoload.php')) {
 }
 
 use Tracy\Debugger;
+
 Debugger::enable();
-// start our application
+// start our application\
 new Application();
