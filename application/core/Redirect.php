@@ -10,7 +10,7 @@ class Redirect {
      * To the homepage
      */
     public static function home() {
-        header("location: " . URL);
+        header("location: ".URL);
     }
 
     /**
@@ -19,6 +19,6 @@ class Redirect {
      * @param $path
      */
     public static function to($path) {
-        header("location: " . URL . $path);
+        header("location: ".URL.$path);
     }
 }

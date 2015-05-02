@@ -19,7 +19,7 @@ class LoginController extends Controller {
      */
     public function index() {
         // if user is logged in redirect to main-page, if not show the view
-        if(LoginModel::isUserLoggedIn()) {
+        if (LoginModel::isUserLoggedIn()) {
             Redirect::home();
         } else {
             $this->View->render('login/index');
@@ -34,7 +34,7 @@ class LoginController extends Controller {
         $login_successful = LoginModel::login(Request::post('user_name'), Request::post('user_password'), Request::post('set_remember_me_cookie'));
 
         // check login status: if true, then redirect user login/showProfile, if false, then to login form again
-        if($login_successful) {
+        if ($login_successful) {
             Redirect::to('login/showProfile');
         } else {
             Redirect::to('login/index');
@@ -58,7 +58,7 @@ class LoginController extends Controller {
         $login_successful = LoginModel::loginWithCookie(Request::cookie('remember_me'));
 
         // if login successful, redirect to dashboard/index ...
-        if($login_successful) {
+        if ($login_successful) {
             Redirect::to('dashboard/index');
         } else {
             // if not, delete cookie (outdated? attack?) and route user to login form to prevent infinite login loops
@@ -162,12 +162,12 @@ class LoginController extends Controller {
     public function changeUserRole_action() {
         Auth::checkAuthentication();
 
-        if(Request::post('user_account_upgrade')) {
+        if (Request::post('user_account_upgrade')) {
             // "2" is quick & dirty account type 2, something like "premium user" maybe. you got the idea :)
             UserRoleModel::changeUserRole(2);
         }
 
-        if(Request::post('user_account_downgrade')) {
+        if (Request::post('user_account_downgrade')) {
             // "1" is quick & dirty account type 1, something like "basic user" maybe.
             UserRoleModel::changeUserRole(1);
         }
@@ -180,7 +180,7 @@ class LoginController extends Controller {
      * Show the register form, but redirect to main-page if user is already logged-in
      */
     public function register() {
-        if(LoginModel::isUserLoggedIn()) {
+        if (LoginModel::isUserLoggedIn()) {
             Redirect::home();
         } else {
             $this->View->render('login/register');
@@ -194,7 +194,7 @@ class LoginController extends Controller {
     public function register_action() {
         $registration_successful = RegistrationModel::registerNewUser();
 
-        if($registration_successful) {
+        if ($registration_successful) {
             Redirect::to('login/index');
         } else {
             Redirect::to('login/register');
@@ -207,7 +207,7 @@ class LoginController extends Controller {
      * @param string $user_activation_verification_code user's verification token
      */
     public function verify($user_id, $user_activation_verification_code) {
-        if(isset($user_id) && isset($user_activation_verification_code)) {
+        if (isset($user_id) && isset($user_activation_verification_code)) {
             RegistrationModel::verifyNewUser($user_id, $user_activation_verification_code);
             $this->View->render('login/verify');
         } else {
@@ -238,7 +238,7 @@ class LoginController extends Controller {
      */
     public function verifyPasswordReset($user_name, $verification_code) {
         // check if this the provided verification code fits the user's verification code
-        if(PasswordResetModel::verifyPasswordReset($user_name, $verification_code)) {
+        if (PasswordResetModel::verifyPasswordReset($user_name, $verification_code)) {
             // pass URL-provided variable to view to display them
             $this->View->render('login/changePassword', array('user_name' => $user_name, 'user_password_reset_hash' => $verification_code));
         } else {

@@ -1,7 +1,7 @@
 <?php
 /**
- * Class AjaxController
- */
+     * Class AjaxController
+     */
 class AjaxController {
     public function __construct() {
         parent::__construct();
