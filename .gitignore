@@ -1,5 +1,10 @@
-application/config/config.development.php
-vendor/
+.settings
+.buildpath
+.project
+.idea
 composer.phar
 composer.lock
-.idea/
+/vendor
+/application/config/config.development.php
+/application/config/config.production.php
+/application/config/config.php

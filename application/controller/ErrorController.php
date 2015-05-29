@@ -17,6 +17,14 @@ class ErrorController extends Controller {
      */
     public function index() {
         header('HTTP/1.0 404 Not Found');
-        $this->View->render('error/index');
+        $this->View->renderWithoutHeaderAndFooter('error/index');
+    }
+
+    /**
+     * Controls what happens when a user is forbidden (403)
+     */
+    public function forbidden() {
+        header('HTTP/1.0 403 Forbidden');
+        $this->View->renderWithoutHeaderAndFooter('error/forbidden');
     }
 }

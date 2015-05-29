@@ -9,8 +9,6 @@ class DashboardController extends Controller {
      */
     public function __construct() {
         parent::__construct();
-
-        // this entire controller should only be visible/usable by logged in users, so we put authentication-check here
         Auth::checkAuthentication();
     }
 
@@ -19,8 +17,5 @@ class DashboardController extends Controller {
      */
     public function index() {
         $this->View->render('dashboard/index');
-    }
-    public function newpc() {
-        $this->View->render('dashboard/newpc');
     }
 }

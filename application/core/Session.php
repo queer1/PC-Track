@@ -12,7 +12,7 @@ class Session {
      */
     public static function init() {
         // if no session exist, start the session
-        if (session_id() == '') {
+        if(session_id() == '') {
             session_start();
         }
     }
@@ -61,8 +61,9 @@ class Session {
      * @return mixed the key's value or nothing
      */
     public static function get($key) {
-        if (isset($_SESSION[$key])) {
+        if(isset($_SESSION[$key])) {
             return $_SESSION[$key];
         }
     }
+
 }

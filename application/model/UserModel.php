@@ -16,6 +16,7 @@ class UserModel {
     public static $getIDByUsernameQuery = null;
     public static $getDataByUsernameQuery = null;
     public static $getDataByIDAndTokenQuery = null;
+
     /**
      * Gets an array that contains all the users in the database. The array's keys are the user ids.
      * Each array element is an object, containing a specific user's data.
@@ -90,84 +91,6 @@ class UserModel {
     }
 
     /**
-     * Checks if a username is already taken
-     *
-     * @param $user_name string username
-     *
-     * @return bool
-     */
-    public static function doesUsernameAlreadyExist($user_name) {
-        if(self::$usernameExistQuery === null) {
-            self::$usernameExistQuery = DatabaseFactory::getFactory()->getConnection()->prepare("SELECT user_id FROM users WHERE user_name = :user_name LIMIT 1");
-        }
-
-        self::$usernameExistQuery->execute(array(':user_name' => $user_name));
-        if(self::$usernameExistQuery->rowCount() == 0) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Checks if a email is already used
-     *
-     * @param $user_email string email
-     *
-     * @return bool
-     */
-    public static function doesEmailAlreadyExist($user_email) {
-        if(self::$emailExistQuery === null) {
-            self::$emailExistQuery = DatabaseFactory::getFactory()->getConnection()->prepare("SELECT user_id FROM users WHERE user_email = :user_email LIMIT 1");
-        }
-        self::$emailExistQuery->execute(array(':user_email' => $user_email));
-        if(self::$emailExistQuery->rowCount() == 0) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Writes new username to database
-     *
-     * @param $user_id int user id
-     * @param $new_user_name string new username
-     *
-     * @return bool
-     */
-    public static function saveNewUserName($user_id, $new_user_name) {
-        if(self::$saveNewUsernameQuery === null) {
-            self::$saveNewUsernameQuery = DatabaseFactory::getFactory()->getConnection()->prepare("UPDATE users SET user_name = :user_name WHERE user_id = :user_id LIMIT 1");
-        }
-
-        self::$saveNewUsernameQuery->execute(array(':user_name' => $new_user_name, ':user_id' => $user_id));
-        if(self::$saveNewUsernameQuery->rowCount() == 1) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Writes new email address to database
-     *
-     * @param $user_id int user id
-     * @param $new_user_email string new email address
-     *
-     * @return bool
-     */
-    public static function saveNewEmailAddress($user_id, $new_user_email) {
-        if(self::$saveNewEmailQuery === null) {
-            self::$saveNewEmailQuery = DatabaseFactory::getFactory()->getConnection()->prepare("UPDATE users SET user_email = :user_email WHERE user_id = :user_id LIMIT 1");
-        }
-
-        self::$saveNewEmailQuery->execute(array(':user_email' => $new_user_email, ':user_id' => $user_id));
-        $count = self::$saveNewEmailQuery->rowCount();
-        if($count == 1) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Edit the user's name, provided in the editing form
      *
      * @param $new_user_name string The new username
@@ -205,6 +128,45 @@ class UserModel {
             Session::add('feedback_negative', Text::get('FEEDBACK_UNKNOWN_ERROR'));
             return false;
         }
+    }
+
+    /**
+     * Checks if a username is already taken
+     *
+     * @param $user_name string username
+     *
+     * @return bool
+     */
+    public static function doesUsernameAlreadyExist($user_name) {
+        if(self::$usernameExistQuery === null) {
+            self::$usernameExistQuery = DatabaseFactory::getFactory()->getConnection()->prepare("SELECT user_id FROM users WHERE user_name = :user_name LIMIT 1");
+        }
+
+        self::$usernameExistQuery->execute(array(':user_name' => $user_name));
+        if(self::$usernameExistQuery->rowCount() == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Writes new username to database
+     *
+     * @param $user_id int user id
+     * @param $new_user_name string new username
+     *
+     * @return bool
+     */
+    public static function saveNewUserName($user_id, $new_user_name) {
+        if(self::$saveNewUsernameQuery === null) {
+            self::$saveNewUsernameQuery = DatabaseFactory::getFactory()->getConnection()->prepare("UPDATE users SET user_name = :user_name WHERE user_id = :user_id LIMIT 1");
+        }
+
+        self::$saveNewUsernameQuery->execute(array(':user_name' => $new_user_name, ':user_id' => $user_id));
+        if(self::$saveNewUsernameQuery->rowCount() == 1) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -254,6 +216,45 @@ class UserModel {
         }
 
         Session::add('feedback_negative', Text::get('FEEDBACK_UNKNOWN_ERROR'));
+        return false;
+    }
+
+    /**
+     * Checks if a email is already used
+     *
+     * @param $user_email string email
+     *
+     * @return bool
+     */
+    public static function doesEmailAlreadyExist($user_email) {
+        if(self::$emailExistQuery === null) {
+            self::$emailExistQuery = DatabaseFactory::getFactory()->getConnection()->prepare("SELECT user_id FROM users WHERE user_email = :user_email LIMIT 1");
+        }
+        self::$emailExistQuery->execute(array(':user_email' => $user_email));
+        if(self::$emailExistQuery->rowCount() == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Writes new email address to database
+     *
+     * @param $user_id int user id
+     * @param $new_user_email string new email address
+     *
+     * @return bool
+     */
+    public static function saveNewEmailAddress($user_id, $new_user_email) {
+        if(self::$saveNewEmailQuery === null) {
+            self::$saveNewEmailQuery = DatabaseFactory::getFactory()->getConnection()->prepare("UPDATE users SET user_email = :user_email WHERE user_id = :user_id LIMIT 1");
+        }
+
+        self::$saveNewEmailQuery->execute(array(':user_email' => $new_user_email, ':user_id' => $user_id));
+        $count = self::$saveNewEmailQuery->rowCount();
+        if($count == 1) {
+            return true;
+        }
         return false;
     }
 
@@ -326,5 +327,15 @@ class UserModel {
 
         // return one row (we only have one result or nothing)
         return self::$getDataByIDAndTokenQuery->fetch();
+    }
+
+    public static function getUsernameById($user_id) {
+        $db = DatabaseFactory::getFactory()->fluentPDO();
+        $query = $db->from('users')->select('user_name')->where('user_id', $user_id);
+        $result = $query->execute()->fetch();
+        $data = json_decode(json_encode($result), true);
+        return $data['user_name'];
+
+
     }
 }

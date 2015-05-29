@@ -7,7 +7,7 @@
         <!-- echo out the system feedback (error and success messages) -->
         <?php $this->renderFeedbackMessages(); ?>
 
-        <a href="<?php echo Config::get('URL'); ?>">Go back to home page</a>
+        <a href="<?php echo URL; ?>">Go back to home page</a>
     </div>
 
 </div>

@@ -11,20 +11,19 @@ class Auth {
     public static function checkAuthentication() {
         // initialize the session (if not initialized yet)
         Session::init();
-
         // if user is not logged in...
-        if (!Session::userIsLoggedIn()) {
-            // ... then treat user as "not logged in", destroy session, redirect to login page
-            Session::destroy();
-            header('location: '.URL.'login');
-            // to prevent fetching views via cURL (which "ignores" the header-redirect above) we leave the application
-            // the hard way, via exit(). @see https://github.com/panique/php-login/issues/453
-            // this is not optimal and will be fixed in future releases
-            exit();
-        }
-        if(Config::get('CASTLE_ENABLED') == 'true') {
-            Castle::setApiKey(Config::get('CASTLE_ID'));
-            Castle::authorize();
+        if(!Session::userIsLoggedIn()) {
+            if(LockModel::lockStatus() == false) {
+                // ... then treat user as "not logged in", destroy session, redirect to login page
+                Session::destroy();
+                header('location: '.URL.'login');
+                // to prevent fetching views via cURL (which "ignores" the header-redirect above) we leave the application
+                // the hard way, via exit(). @see https://github.com/panique/php-login/issues/453
+                // this is not optimal and will be fixed in future releases
+                exit();
+            } else {
+                Redirect::to('lock');
+            }
         }
     }
 }

@@ -31,10 +31,25 @@ class CaptchaModel {
      * @return bool success of captcha check
      */
     public static function checkCaptcha($captcha) {
-        if ($captcha == Session::get('captcha')) {
+        if($captcha == Session::get('captcha')) {
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Check Google ReCaptcha
+     * @param $gReCaptchaResponse
+     * @return bool
+     */
+    public static function checkRecaptcha($gReCaptchaResponse) {
+        $recaptcha = new \ReCaptcha\ReCaptcha(Config::get('RECAPTCHA_SECRET'));
+        $resp = $recaptcha->verify($gReCaptchaResponse, Request::server('REMOTE_ADDR'));
+        if($resp->isSuccess()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

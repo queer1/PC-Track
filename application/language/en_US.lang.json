@@ -1,0 +1,19 @@
+{
+  "login": "login",
+  "login-empty-field": "Password or Username fields were empty! They are required!",
+  "login-failed": "Login Failed: Check your username and password!",
+  "login-error": "Something went wrong on our end when trying to log you in.",
+  "login-wrong-3": "Your Password was wrong three times!",
+  "login-verification": "You must activate your account before you can login!",
+  "login-cookie-invalid": "The Login Cookie was invalid!",
+  "login-cookie-success": "Successfully logged in using your cookie!",
+  "register-new-account": "register new account",
+  "captcha": "captcha",
+  "registration-failed": "Sorry your registration failed. Please try again.",
+  "captcha-wrong": "The Captcha Entered was incorrect. Please try again.",
+  "username": "username",
+  "email": "email",
+  "password": "password",
+  "password-repeat": "repeat password",
+  "unknown-error": "Unknown Error occurred. This might be our fault!"
+}

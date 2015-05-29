@@ -10,6 +10,7 @@ class LoginModel {
     public static $resetFailedLoginQuery = null;
     public static $saveTimeOfLoginQuery = null;
     public static $setRememberMeTokenQuery = null;
+
     /**
      * Login process (for DEFAULT user accounts).
      *
@@ -21,8 +22,8 @@ class LoginModel {
      */
     public static function login($user_name, $user_password, $set_remember_me_cookie = null) {
         // we do negative-first checks here, for simplicity empty username and empty password in one line
-        if(empty($user_name) OR empty($user_password)) {
-            Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_OR_PASSWORD_FIELD_EMPTY'));
+        if(empty($user_name) or empty($user_password)) {
+            Session::add('feedback_negative', Language::getText('login-empty-field'));
             return false;
         }
 
@@ -49,9 +50,13 @@ class LoginModel {
         // successfully logged in, so we write all necessary data into the session and set "user_logged_in" to true
         self::setSuccessfulLoginIntoSession($result->user_id, $result->user_name, $result->user_email, $result->user_account_type);
 
-        if(Config::get('CASTLE_ENABLED') == 'true') {
-            Castle::setApiKey(Config::get('CASTLE_ID'));
-            Castle::login($result->user_id, array('email' => $result->user_email, 'name' => $result->user_name));
+        if(Config::get('CASTLE_ENABLED')) {
+            Castle::setApiKey(Config::get('CASTLE_SECRET'));
+            Castle::track(array(
+                    'name' => '$login.succeeded',
+                    'user_id' => $result->user_id
+                )
+            );
         }
         // return true to make clear the login was successful
         // maybe do this in dependence of setSuccessfulLoginIntoSession ?
@@ -73,105 +78,59 @@ class LoginModel {
 
         // Check if that user exists. We don't give back a cause in the feedback to avoid giving an attacker details.
         if(!$result) {
-            Session::add('feedback_negative', Text::get('FEEDBACK_LOGIN_FAILED'));
+            Session::add('feedback_negative', Language::getText('login-failed'));
             return false;
         }
 
         // block login attempt if somebody has already failed 3 times and the last login attempt is less than 30sec ago
-        if(($result->user_failed_logins >= 3) AND ($result->user_last_failed_login > (time() - 30))) {
-            Session::add('feedback_negative', Text::get('FEEDBACK_PASSWORD_WRONG_3_TIMES'));
+        if(($result->user_failed_logins >= 3) && ($result->user_last_failed_login > (time() - 30))) {
+            Session::add('feedback_negative', Language::getText('login-wrong-3'));
             return false;
         }
 
         // if hash of provided password does NOT match the hash in the database: +1 failed-login counter
         if(!password_verify($user_password, $result->user_password_hash)) {
             self::incrementFailedLoginCounterOfUser($result->user_name);
-            // we say "password wrong" here, but less details like "login failed" would be better (= less information)
-            Session::add('feedback_negative', Text::get('FEEDBACK_PASSWORD_WRONG'));
+            Session::add('feedback_negative', Language::getText('login-failed'));
+            if(Config::get('CASTLE_ENABLED')) {
+                Castle::setApiKey(Config::get('CASTLE_SECRET'));
+                Castle::track(array(
+                    'name' => '$login.failed',
+                    'details' => array(
+                        '$login' => $result->user_email,
+                        '$reason' => 'Password Incorrect'
+                    )
+                ));
+            }
             return false;
         }
 
         // if user is not active (= has not verified account by verification mail)
         if($result->user_active != 1) {
-            Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_NOT_ACTIVATED_YET'));
+            Session::add('feedback_negative', Language::getText('login-verification'));
+            if(Config::get('CASTLE_ENABLED')) {
+                Castle::setApiKey(Config::get('CASTLE_SECRET'));
+                Castle::track(array(
+                    'name' => '$login.failed',
+                    'details' => array(
+                        '$login' => $result->user_email,
+                        '$reason' => 'Account not Activated'
+                    )
+                ));
+            }
             return false;
         }
-
+        if(Config::get('CASTLE_ENABLED')) {
+            Castle::setApiKey(Config::get('CASTLE_SECRET'));
+            Castle::login(
+                $result->user_id,
+                array(
+                    'username' => $result->user_name,
+                    'email' => $result->user_email
+                )
+            );
+        }
         return $result;
-    }
-
-    /**
-     * performs the login via cookie (for DEFAULT user account, FACEBOOK-accounts are handled differently)
-     * TODO add throttling here ?
-     *
-     * @param $cookie string The cookie "remember_me"
-     *
-     * @return bool success state
-     */
-    public static function loginWithCookie($cookie) {
-        if(!$cookie) {
-            Session::add('feedback_negative', Text::get('FEEDBACK_COOKIE_INVALID'));
-            return false;
-        }
-
-        // check cookie's contents, check if cookie contents belong together or token is empty
-        list ($user_id, $token, $hash) = explode(':', $cookie);
-        if($hash !== hash('sha256', $user_id . ':' . $token) OR empty($token)) {
-            Session::add('feedback_negative', Text::get('FEEDBACK_COOKIE_INVALID'));
-            return false;
-        }
-
-        // get data of user that has this id and this token
-        $result = UserModel::getUserDataByUserIdAndToken($user_id, $token);
-        if($result) {
-            // successfully logged in, so we write all necessary data into the session and set "user_logged_in" to true
-            self::setSuccessfulLoginIntoSession($result->user_id, $result->user_name, $result->user_email, $result->user_account_type);
-            // save timestamp of this login in the database line of that user
-            self::saveTimestampOfLoginOfUser($result->user_name);
-
-            Session::add('feedback_positive', Text::get('FEEDBACK_COOKIE_LOGIN_SUCCESSFUL'));
-            return true;
-        } else {
-            Session::add('feedback_negative', Text::get('FEEDBACK_COOKIE_INVALID'));
-            return false;
-        }
-    }
-
-    /**
-     * Log out process: delete cookie, delete session
-     */
-    public static function logout() {
-        self::deleteCookie();
-        Session::destroy();
-        if(Config::get('CASTLE_ENABLED') == 'true') {
-            Castle::setApiKey(Config::get('CASTLE_ID'));
-            Castle::logout();
-        }
-    }
-
-    /**
-     * The real login process: The user's data is written into the session.
-     * Cheesy name, maybe rename. Also maybe refactoring this, using an array.
-     *
-     * @param $user_id
-     * @param $user_name
-     * @param $user_email
-     * @param $user_account_type
-     */
-    public static function setSuccessfulLoginIntoSession($user_id, $user_name, $user_email, $user_account_type) {
-        Session::init();
-        Session::set('user_id', $user_id);
-        Session::set('user_name', $user_name);
-        Session::set('user_email', $user_email);
-        Session::set('user_account_type', $user_account_type);
-        Session::set('user_provider_type', 'DEFAULT');
-
-        // get and set avatars
-        Session::set('user_avatar_file', AvatarModel::getPublicUserAvatarFilePathByUserId($user_id));
-        Session::set('user_gravatar_image_url', AvatarModel::getGravatarLinkByEmail($user_email));
-
-        // finally, set user as logged-in
-        Session::set('user_logged_in', true);
     }
 
     /**
@@ -236,12 +195,91 @@ class LoginModel {
         self::$setRememberMeTokenQuery->execute(array(':user_remember_me_token' => $random_token_string, ':user_id' => $user_id));
 
         // generate cookie string that consists of user id, random string and combined hash of both
-        $cookie_string_first_part = $user_id . ':' . $random_token_string;
+        $cookie_string_first_part = $user_id.':'.$random_token_string;
         $cookie_string_hash = hash('sha256', $cookie_string_first_part);
-        $cookie_string = $cookie_string_first_part . ':' . $cookie_string_hash;
+        $cookie_string = $cookie_string_first_part.':'.$cookie_string_hash;
 
         // set cookie
         setcookie('remember_me', $cookie_string, time() + Config::get('COOKIE_RUNTIME'), Config::get('COOKIE_PATH'));
+    }
+
+    /**
+     * The real login process: The user's data is written into the session.
+     * Cheesy name, maybe rename. Also maybe refactoring this, using an array.
+     *
+     * @param $user_id
+     * @param $user_name
+     * @param $user_email
+     * @param $user_account_type
+     */
+    public static function setSuccessfulLoginIntoSession($user_id, $user_name, $user_email, $user_account_type) {
+        Session::init();
+        Session::set('user_id', $user_id);
+        Session::set('user_name', $user_name);
+        Session::set('user_email', $user_email);
+        Session::set('user_account_type', $user_account_type);
+        Session::set('user_provider_type', 'DEFAULT');
+
+        // get and set avatars
+        Session::set('user_avatar_file', AvatarModel::getPublicUserAvatarFilePathByUserId($user_id));
+        Session::set('user_gravatar_image_url', AvatarModel::getGravatarLinkByEmail($user_email));
+
+        // finally, set user as logged-in
+        Session::set('user_logged_in', true);
+        Session::set('locked', 0);
+    }
+
+    /**
+     * performs the login via cookie (for DEFAULT user account, FACEBOOK-accounts are handled differently)
+     * TODO add throttling here ?
+     *
+     * @param $cookie string The cookie "remember_me"
+     *
+     * @return bool success state
+     */
+    public static function loginWithCookie($cookie) {
+        if(!$cookie) {
+            Session::add('feedback_negative', Language::getText('login-cookie-invalid'));
+            return false;
+        }
+
+        // check cookie's contents, check if cookie contents belong together or token is empty
+        list ($user_id, $token, $hash) = explode(':', $cookie);
+        if($hash !== hash('sha256', $user_id.':'.$token) or empty($token)) {
+            Session::add('feedback_negative', Language::getText('login-cookie-invalid'));
+            return false;
+        }
+
+        // get data of user that has this id and this token
+        $result = UserModel::getUserDataByUserIdAndToken($user_id, $token);
+        if($result) {
+            // successfully logged in, so we write all necessary data into the session and set "user_logged_in" to true
+            self::setSuccessfulLoginIntoSession($result->user_id, $result->user_name, $result->user_email, $result->user_account_type);
+            // save timestamp of this login in the database line of that user
+            self::saveTimestampOfLoginOfUser($result->user_name);
+
+            Session::add('feedback_positive', Language::getText('login-cookie-success'));
+            return true;
+        } else {
+            Session::add('feedback_negative', Language::getText('login-cookie-invalid'));
+            return false;
+        }
+    }
+
+    /**
+     * Log out process: delete cookie, delete session
+     */
+    public static function logout() {
+        if(Config::get('CASTLE_ENABLED')) {
+            Castle::setApiKey(Config::get('CASTLE_SECRET'));
+            Castle::logout();
+            Castle::track(array(
+                'name' => '$logout.succeeded',
+                'user_id' => Session::get('user_id')
+            ));
+        }
+        self::deleteCookie();
+        Session::destroy();
     }
 
     /**
@@ -262,4 +300,5 @@ class LoginModel {
     public static function isUserLoggedIn() {
         return Session::userIsLoggedIn();
     }
+
 }

@@ -28,11 +28,11 @@ class Application {
         $this->createControllerAndActionNames();
 
         // does such a controller exist ?
-        if(file_exists(PATH_CONTROLLER . $this->controller_name . '.php')) {
+        if(file_exists(PATH_CONTROLLER.$this->controller_name.'.php')) {
 
             // load this file and create this controller
             // example: if controller would be "car", then this line would translate into: $this->car = new car();
-            require PATH_CONTROLLER . $this->controller_name . '.php';
+            require PATH_CONTROLLER.$this->controller_name.'.php';
             $this->controller = new $this->controller_name();
 
             // check for method: does such a method exist in the controller ?
@@ -86,12 +86,12 @@ class Application {
         }
 
         // check for action: no action given ? then make action = default action (from config)
-        if(!$this->action_name OR (strlen($this->action_name) == 0)) {
+        if(!$this->action_name or (strlen($this->action_name) == 0)) {
             $this->action_name = DEFAULT_ACTION;
         }
 
         // rename controller name to real controller class/file name ("index" to "IndexController")
-        $this->controller_name = ucwords($this->controller_name) . 'Controller';
+        $this->controller_name = ucwords($this->controller_name).'Controller';
     }
 
     private function return404andErrorPage() {
@@ -99,7 +99,7 @@ class Application {
         // and 404 is the http error code
         header('HTTP/1.0 404 Not Found', true, 404);
         // additionally, load the
-        require PATH_CONTROLLER . 'ErrorController.php';
+        require PATH_CONTROLLER.'ErrorController.php';
         $this->controller = new ErrorController;
         $this->controller->index();
     }

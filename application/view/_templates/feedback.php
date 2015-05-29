@@ -5,15 +5,17 @@ $feedback_positive = Session::get('feedback_positive');
 $feedback_negative = Session::get('feedback_negative');
 
 // echo out positive messages
-if (isset($feedback_positive)) {
-    foreach ($feedback_positive as $feedback) {
-        echo '<ul class="collection"> <li class="collection-item green">'.$feedback.'</li></ul>';
+if(isset($feedback_positive)) {
+    foreach($feedback_positive as $feedback) {
+        echo '<div class="alert alert-succes" role="alert">';
+        echo '<strong></strong>'.$feedback.'</div>';
     }
 }
 
 // echo out negative messages
-if (isset($feedback_negative)) {
-    foreach ($feedback_negative as $feedback) {
-        echo '<ul class="collection"> <li class="collection-item red darken-1">'.$feedback.'</li></ul>';
+if(isset($feedback_negative)) {
+    foreach($feedback_negative as $feedback) {
+        echo '<div class="alert alert-danger" role="alert">';
+        echo '<strong>Warning:</strong>'.$feedback.'</div>';
     }
 }

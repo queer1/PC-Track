@@ -1,30 +1,33 @@
 {
-    "name": "tankekiller125/PC-Project",
-    "type": "project",
-    "description": "A rich powerful easy to use Tracking system for PC Techs and Companies",
-    "keywords": [
-        "powerful",
-        "easy",
-        "tracking",
-        "repair",
-        "computers",
-        "pc"
-    ],
-    "homepage": "https://github.com/tankerkiller125/PC-Track",
-    "license": "MIT",
-    "require-dev": {
-        "php": ">=5.5.0",
-        "phpmailer/phpmailer": "~5.2",
-        "gregwar/captcha": "~1.0.12",
-      "tracy/tracy": "*",
-      "castle/castle-php": "dev-master"
-    },
-    "autoload": {
-        "psr-4": {
-            "": [
-                "application/core/",
-                "application/model/"
-            ]
-        }
+  "name": "panique/huge",
+  "type": "project",
+  "description": "A full-feature user authentication / login system embedded into a simple but powerful MVC framework structure",
+  "keywords": [
+    "login",
+    "auth",
+    "user",
+    "authentication",
+    "mvc",
+    "membership"
+  ],
+  "homepage": "https://github.com/panique/huge",
+  "license": "MIT",
+  "require-dev": {
+    "php": ">=5.5.0",
+    "gregwar/captcha": "~1.0.12",
+    "phpmailer/phpmailer": "~5.2",
+    "phpfastcache/phpfastcache": "~3.0",
+    "tracy/tracy": "*",
+    "castle/castle-php": "1.2.0",
+    "lichtner/fluentpdo": "dev-master",
+    "google/recaptcha": "~1.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "": [
+        "application/core/",
+        "application/model/"
+      ]
     }
+  }
 }
